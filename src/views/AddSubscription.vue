@@ -1,4 +1,4 @@
 <template>
-  <div>Subscription List</div>
+  <div>Add Form</div>
 </template>
 <script setup></script>
