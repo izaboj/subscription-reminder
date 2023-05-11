@@ -15,10 +15,12 @@
         <v-list-item
           v-for="(item, i) in listItems"
           :key="i"
-          :value="item"
-          :link="item.link"
+          :value="item.title"
+          :to="item.link"
+          link
           variant="plain"
           active-color="primary"
+          :ripple="false"
         >
           <template v-slot:prepend>
             <v-icon :icon="item.icon"></v-icon>
@@ -30,7 +32,7 @@
       <v-divider></v-divider>
       <v-container class="my-4">
         <v-row justify="center">
-          <v-btn variant="text"> Logout </v-btn>
+          <v-btn variant="text" @click="logout"> Logout </v-btn>
         </v-row>
       </v-container>
     </v-navigation-drawer>
@@ -48,12 +50,13 @@
 </template>
 <script setup>
 import { ref } from "vue";
+import router from "./router";
 
 const drawer = ref(null);
 const listItems = [
   {
     icon: "mdi-youtube-subscription",
-    link: "/",
+    link: "/subscriptions",
     title: "List of subscriptions",
   },
   {
@@ -67,4 +70,8 @@ const listItems = [
     title: "About",
   },
 ];
+
+function logout() {
+  router.push("/auth");
+}
 </script>
