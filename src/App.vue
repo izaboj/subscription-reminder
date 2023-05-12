@@ -5,8 +5,8 @@
         <v-list-item
           lines="three"
           prepend-avatar="https://randomuser.me/api/portraits/women/81.jpg"
-          title="Jane Smith"
-          subtitle="Logged in"
+          :title="setDrawerTitle"
+          :subtitle="setDrawerSubtitle"
         ></v-list-item>
       </template>
 
@@ -32,7 +32,9 @@
       <v-divider></v-divider>
       <v-container class="my-4">
         <v-row justify="center">
-          <v-btn variant="text" @click="logout"> Logout </v-btn>
+          <v-btn variant="text" @click="logout">
+            {{ setButtonCaption }}
+          </v-btn>
         </v-row>
       </v-container>
     </v-navigation-drawer>
@@ -49,9 +51,12 @@
   </v-app>
 </template>
 <script setup>
-import { ref } from "vue";
-import router from "./router";
+import { ref, computed } from "vue";
+import { useRouter } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
 
+const store = useAuthStore();
+const router = useRouter();
 const drawer = ref(null);
 const listItems = [
   {
@@ -70,8 +75,21 @@ const listItems = [
     title: "About",
   },
 ];
+const setButtonCaption = computed(() => {
+  return store.isLoggedIn ? "Logout" : "login";
+});
 
+const setDrawerSubtitle = computed(() => {
+  return store.isLoggedIn ? "Logged in" : "not login";
+});
+const setDrawerTitle = computed(() => {
+  return store.isLoggedIn ? store.userName : "";
+});
+// function setButtonCaption() {
+//   return store.isLoggedIn ? "Logout" : "login";
+// }
 function logout() {
-  router.push("/auth");
+  store.logout();
+  router.replace("/auth");
 }
 </script>
