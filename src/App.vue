@@ -32,8 +32,8 @@
       <v-divider></v-divider>
       <v-container class="my-4">
         <v-row justify="center">
-          <v-btn variant="text" @click="logout">
-            {{ setButtonCaption }}
+          <v-btn variant="text" @click="clickAction">
+            {{ setButtonCaptions }}
           </v-btn>
         </v-row>
       </v-container>
@@ -55,7 +55,7 @@ import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 
-const store = useAuthStore();
+const authStore = useAuthStore();
 const router = useRouter();
 const drawer = ref(null);
 const listItems = [
@@ -75,21 +75,23 @@ const listItems = [
     title: "About",
   },
 ];
-const setButtonCaption = computed(() => {
-  return store.isLoggedIn ? "Logout" : "login";
-});
-
 const setDrawerSubtitle = computed(() => {
-  return store.isLoggedIn ? "Logged in" : "not login";
+  return authStore.isLoggedIn ? "Logged in" : "Logged out";
 });
 const setDrawerTitle = computed(() => {
-  return store.isLoggedIn ? store.userName : "";
+  return authStore.isLoggedIn ? authStore.userName : "";
 });
-// function setButtonCaption() {
-//   return store.isLoggedIn ? "Logout" : "login";
-// }
-function logout() {
-  store.logout();
+const setButtonCaptions = computed(() => {
+  return authStore.isLoggedIn ? "Logout" : "Login";
+});
+
+authStore.tryLogin();
+console.log("im created APP vue");
+
+const clickAction = () => {
+  if (authStore.isLoggedIn) {
+    authStore.logout();
+  }
   router.replace("/auth");
-}
+};
 </script>

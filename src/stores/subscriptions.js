@@ -29,8 +29,6 @@ export const useSubscriptionsStore = defineStore("subscriptions", {
       });
 
       const responseData = await response.json();
-      console.log(responseData);
-
       const mappedData = [];
       for (const key in responseData) {
         const item = {
@@ -42,7 +40,6 @@ export const useSubscriptionsStore = defineStore("subscriptions", {
         };
         mappedData.push(item);
       }
-
       this.setSubcriptions(mappedData);
     },
   },
