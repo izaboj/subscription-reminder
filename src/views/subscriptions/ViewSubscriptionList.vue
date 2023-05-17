@@ -3,15 +3,6 @@
     ><p>{{ error }}</p></base-dialog
   >
   <base-sheet title="Your subscriptions list">
-    <!-- <div v-if="isLoading">
-      Data is loading
-      <v-progress-linear
-        indeterminate
-        color="primary"
-        class="mb-0"
-      ></v-progress-linear>
-    </div> -->
-
     <v-card :loading="isLoading" class="mb-4 outlined" v-for="i in itemsList">
       <v-card-item>
         <v-card-title>{{ i.name }}</v-card-title>

@@ -1,4 +1,3 @@
-import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 
 export const useAuthStore = defineStore("auth", {
@@ -73,19 +72,20 @@ export const useAuthStore = defineStore("auth", {
         (this.userToken = jsonData.idToken);
     },
     tryLogin() {
+      console.log("tryLogin ...");
       const token = localStorage.getItem("token");
       const userId = localStorage.getItem("userId");
       const expirationDate = localStorage.getItem("expirationDate");
 
       const expiresIn = +expirationDate - new Date().getTime();
-
+      console.log("expiresIn", expiresIn);
       if (expiresIn < 0) {
         return;
       }
 
       if (token && userId) {
         (this.userId = userId),
-          (this.userName = null),
+          (this.userName = "TryLoginName"),
           (this.userToken = token);
       } else {
         return;

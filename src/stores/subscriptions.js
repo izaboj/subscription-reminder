@@ -11,15 +11,9 @@ export const useSubscriptionsStore = defineStore("subscriptions", {
   }),
   getters: {},
   actions: {
-    setSubcriptions(payload) {
-      this.subscriptions = payload;
-    },
-    addSubscription(item) {
-      this.subscriptions.push(item);
-    },
     async getSubscriptions() {
       const authStore = useAuthStore();
-      const userId = 1;
+      const userId = authStore.userId;
       const tokenId = authStore.userToken;
       const url =
         this.firebaseEndpoint + `/subscriptions/${userId}.json?auth=` + tokenId;
@@ -29,35 +23,48 @@ export const useSubscriptionsStore = defineStore("subscriptions", {
       });
 
       const responseData = await response.json();
-      const mappedData = [];
-      for (const key in responseData) {
-        const item = {
-          id: key,
-          name: responseData[key].name,
-          price: responseData[key].price,
-          dueTo: responseData[key].dueTo,
-          reminder: responseData[key].reminder,
-        };
-        mappedData.push(item);
+
+      if (!response.ok) {
+        throw new Error(
+          responseData.message ||
+            "sth went wrong during getting list of subscription"
+        );
+      } else {
+        const mappedData = [];
+        for (const key in responseData) {
+          const item = {
+            id: key,
+            ...responseData[key],
+          };
+          mappedData.push(item);
+        }
+        this.subscriptions = mappedData;
       }
-      this.setSubcriptions(mappedData);
+    },
+    async addSubscription(data) {
+      const authStore = useAuthStore();
+      const userId = authStore.userId;
+      const tokenId = authStore.userToken;
+      const url =
+        this.firebaseEndpoint + `/subscriptions/${userId}.json?auth=` + tokenId;
+
+      const response = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          responseData.message || "sth went wrong during adding subscription"
+        );
+      } else {
+        const subId = responseData.name;
+        const newData = { id: subId, ...data };
+
+        this.subscriptions.push(newData);
+      }
     },
   },
 });
-
-// subscriptions = [
-//   {
-//     id: 12,
-//     name: "tv sub",
-//     price: "30 zl",
-//     dueTo: "2025-12-12",
-//     reminder: true,
-//   },
-//   {
-//     id: 13,
-//     name: "youtube",
-//     price: "30 zl",
-//     dueTo: "2024-12-12",
-//     reminder: false,
-//   },
-// ];
