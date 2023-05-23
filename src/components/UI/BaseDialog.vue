@@ -1,6 +1,9 @@
 <template>
   <v-dialog v-model="dialog" width="400" min-height="100">
     <v-card>
+      <v-card-title class="text-h5">
+        <slot name="title"></slot>
+      </v-card-title>
       <v-card-text>
         <slot></slot>
       </v-card-text>

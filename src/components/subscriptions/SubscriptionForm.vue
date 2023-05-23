@@ -36,7 +36,14 @@
       label="Reminder"
     ></v-switch>
     <div>
-      <v-btn type="submit" class="me-4"> add</v-btn>
+      <v-btn
+        :disabled="!state.isValidated"
+        :loading="state.isLoading"
+        type="submit"
+        class="me-4"
+      >
+        add</v-btn
+      >
       <v-btn variant="text" @click="cancelAction"> cancel </v-btn>
     </div>
   </form>
@@ -48,7 +55,7 @@ import { useSubscriptionsStore } from "@/stores/subscriptions";
 import { useVuelidate } from "@vuelidate/core";
 import { required, minLength } from "@vuelidate/validators";
 
-const emit = defineEmits(["error"]);
+const emit = defineEmits(["error", "success"]);
 
 const state = reactive({
   form: {
@@ -57,6 +64,8 @@ const state = reactive({
     reminder: true,
     dueTo: null,
   },
+  isLoading: false,
+  isValidated: true,
 });
 
 // validation
@@ -69,24 +78,23 @@ const rules = {
 
 const v$ = useVuelidate(rules, state.form);
 const router = useRouter();
+const store = useSubscriptionsStore();
 
 const submitForm = async () => {
-  const store = useSubscriptionsStore();
-  const isValidated = await v$.value.$validate();
-  if (!isValidated) {
+  state.isLoading = true;
+  state.isValidated = await v$.value.$validate();
+  if (!state.isValidated) {
     return;
   } else {
     const item = { ...state.form };
     try {
-      // await store.addSubscription(item);
-      throw new Error("test");
+      await store.addSubscription(item);
+      emit("success", item);
     } catch (e) {
-      // state.error = e.message || "can not get data";
-      // state.isError = true;
       emit("error", e);
     }
-    // router.replace("/subscriptions/");
   }
+  state.isLoading = false;
 };
 const cancelAction = () => {
   router.replace("/subscriptions");

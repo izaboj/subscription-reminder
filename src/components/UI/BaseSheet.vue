@@ -1,14 +1,13 @@
 <template>
   <v-container class="mt-4">
     <v-sheet
-      elevation="10"
+      elevation="1"
       max-width="600"
-      rounded="lg"
+      rounded="sm"
       width="100%"
-      class="pa-4 text-center mx-auto"
+      class="pa-4 text-left mx-auto"
       :color="color"
     >
-      <h2 class="text-h5 mb-6">{{ title }}</h2>
       <slot></slot>
     </v-sheet>
   </v-container>

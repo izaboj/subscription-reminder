@@ -35,10 +35,10 @@
           @blur="v$.password.$touch"
         ></v-text-field>
         <div>
-          <v-btn type="submit" class="me-4" @click="">
+          <v-btn type="submit" class="me-4" color="primary" @click="">
             {{ loginSignupButtonText }}</v-btn
           >
-          <v-btn variant="text" @click="switchMode">
+          <v-btn variant="text" color="primary" @click="switchMode">
             {{ switchModeButtonText }}
           </v-btn>
         </div>

@@ -32,7 +32,7 @@
       <v-divider></v-divider>
       <v-container class="my-4">
         <v-row justify="center">
-          <v-btn variant="text" @click="clickAction">
+          <v-btn color="primary" @click="clickAction">
             {{ setButtonCaptions }}
           </v-btn>
         </v-row>
@@ -42,7 +42,9 @@
     <v-app-bar>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
-      <v-toolbar-title>Subscription Reminder</v-toolbar-title>
+      <v-toolbar-title class="d-flex justify-end mr-3"
+        ><div class="text-primary">Subscription Reminder</div></v-toolbar-title
+      >
     </v-app-bar>
 
     <v-main>
