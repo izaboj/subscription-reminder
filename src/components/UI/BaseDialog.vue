@@ -19,6 +19,7 @@
 </template>
 <script setup>
 import { ref, computed } from "vue";
+
 // props
 const props = defineProps({
   fixed: {
@@ -38,6 +39,9 @@ const props = defineProps({
   },
 });
 
+// state
+const dialog = ref(true);
+
 const isActionDialog = computed(() => {
   if (!props.fixed && props.type === "info") {
     return false;
@@ -47,9 +51,4 @@ const isActionDialog = computed(() => {
     return false;
   }
 });
-
-// state
-const dialog = ref(true);
-
-const cardAction = () => {};
 </script>

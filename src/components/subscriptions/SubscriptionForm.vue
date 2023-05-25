@@ -77,7 +77,6 @@ const state = reactive({
     price: null,
     reminder: true,
     dueTo: null,
-    // selected: null,
   },
   availableSubscriptions: [
     { text: "YouTube", icon: "mdi-youtube" },

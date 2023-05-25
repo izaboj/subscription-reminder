@@ -2,7 +2,7 @@
   <base-dialog v-model="hasError" title="Error" @close="handleError">{{
     error
   }}</base-dialog>
-
+  <add-new-subscription-dialog v-model="dialog"></add-new-subscription-dialog>
   <base-sheet justify="start">
     <h2 class="text-h5 mb-4">
       <v-icon color="primary" icon="mdi-youtube-subscription"></v-icon>
@@ -16,7 +16,11 @@
         variant="solo"
         single-line
       ></v-text-field>
-      <v-btn class="ml-4" prepend-icon="mdi-plus" color="primary"
+      <v-btn
+        class="ml-4"
+        prepend-icon="mdi-plus"
+        color="primary"
+        @click="activeDialog"
         >add new</v-btn
       >
     </div>
@@ -49,6 +53,7 @@
 import { ref, computed } from "vue";
 import { useSubscriptionsStore } from "@/stores/subscriptions";
 import SubscriptionItem from "@/components/subscriptions/SubscriptionItem.vue";
+import AddNewSubscriptionDialog from "@/components/subscriptions/AddNewSubscriptionDialog.vue";
 
 //store
 const subStore = useSubscriptionsStore();
@@ -57,6 +62,7 @@ const subStore = useSubscriptionsStore();
 const error = ref(null);
 const hasError = ref(false);
 const isLoading = ref(false);
+const dialog = ref(false);
 
 const hasSubscriptions = computed(() => {
   return subStore.hasSubscriptions;
@@ -72,7 +78,10 @@ const loadItems = async () => {
   }
   isLoading.value = false;
 };
-
+const activeDialog = () => {
+  console.log("active dialog");
+  dialog.value = true;
+};
 const handleError = (e) => {
   error.value = e ? e : null;
   hasError.value = e ? true : false;
