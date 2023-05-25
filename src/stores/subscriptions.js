@@ -1,6 +1,6 @@
-import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import { useAuthStore } from "@/stores/auth";
+import { toRaw } from "vue";
 
 export const useSubscriptionsStore = defineStore("subscriptions", {
   state: () => ({
@@ -9,7 +9,11 @@ export const useSubscriptionsStore = defineStore("subscriptions", {
     firebaseEndpoint:
       "https://subscription-reminder-5d2a3-default-rtdb.firebaseio.com/",
   }),
-  getters: {},
+  getters: {
+    hasSubscriptions(state) {
+      return state.subscriptions && state.subscriptions.length > 0;
+    },
+  },
   actions: {
     async getSubscriptions() {
       const authStore = useAuthStore();
@@ -64,6 +68,30 @@ export const useSubscriptionsStore = defineStore("subscriptions", {
         const newData = { id: subId, ...data };
 
         this.subscriptions.push(newData);
+      }
+    },
+    async deleteSubscription(id) {
+      console.log("ID", id);
+      const authStore = useAuthStore();
+      const userId = authStore.userId;
+      const tokenId = authStore.userToken;
+      const url =
+        this.firebaseEndpoint +
+        `/subscriptions/${userId}/${id}.json?auth=` +
+        tokenId;
+
+      const response = await fetch(url, {
+        method: "DELETE",
+      });
+
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        throw new Error("sth went wrong during deleteing subscription");
+      } else {
+        this.subscriptions = this.subscriptions.filter((item) => {
+          return item.id !== id;
+        });
       }
     },
   },

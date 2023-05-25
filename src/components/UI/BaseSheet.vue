@@ -2,11 +2,10 @@
   <v-container class="mt-4">
     <v-sheet
       elevation="1"
-      max-width="600"
       rounded="sm"
       width="100%"
       class="pa-4 text-left mx-auto"
-      :color="color"
+      color="grey-lighten-3"
     >
       <slot></slot>
     </v-sheet>

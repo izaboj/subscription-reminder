@@ -1,15 +1,29 @@
 <template>
   <form class="pa-5 ma-5" @submit.prevent="submitForm">
-    <v-text-field
-      class="mb-3"
-      v-model.trim="state.form.name"
+    <v-select
+      v-model="state.form.name"
+      :items="state.availableSubscriptions"
+      item-value="text"
+      item-title="text"
+      label="Subscription Name"
       :error-messages="v$.name.$errors.map((e) => e.$message)"
-      label="Name"
-      type="text"
-      required
-      @input="v$.name.$touch"
+      @change="v$.name.$touch"
       @blur="v$.name.$touch"
-    ></v-text-field>
+    >
+      <template v-slot:item="{ item, index, props }">
+        <v-list-item v-bind="props">
+          <v-list-item-title>
+            <v-row>
+              {{ item.title }}
+            </v-row>
+          </v-list-item-title>
+          <template v-slot:prepend>
+            {{ item.raw.icon }}
+            <v-icon :icon="item.raw.icon"></v-icon>
+          </template>
+        </v-list-item>
+      </template>
+    </v-select>
     <v-text-field
       class="mb-3"
       v-model.trim="state.form.price"
@@ -59,19 +73,28 @@ const emit = defineEmits(["error", "success"]);
 
 const state = reactive({
   form: {
-    name: "",
+    name: null,
     price: null,
     reminder: true,
     dueTo: null,
+    // selected: null,
   },
+  availableSubscriptions: [
+    { text: "YouTube", icon: "mdi-youtube" },
+    { text: "Spotify", icon: "mdi-spotify" },
+    { text: "Netflix", icon: "mdi-netflix" },
+    { text: "Microsoft", icon: "mdi-microsoft" },
+    { text: "Adobe", icon: "mdi-adobe" },
+  ],
   isLoading: false,
   isValidated: true,
 });
 
 // validation
 const rules = {
-  name: { required, minLength: minLength(3) },
-  price: {},
+  name: { required },
+  // selected: { required },
+  price: { required },
   dueTo: { required, minLength: minLength(10) },
   reminder: { required },
 };
