@@ -4,13 +4,15 @@
   }}</base-dialog>
   <base-dialog v-if="state.isSuccess" fixed>
     <template v-slot:title>Success</template>
-    Sucess: Your subscription has been added
+    Your subscription has been updated successfully
   </base-dialog>
   <base-card>
-    <SubscriptionForm
+    <subscription-form
+      type="edit"
+      :id="id"
       @error="handleError"
       @success="handleSuccess"
-    ></SubscriptionForm>
+    ></subscription-form>
   </base-card>
 </template>
 
@@ -20,12 +22,16 @@ import SubscriptionForm from "@/components/subscriptions/SubscriptionForm.vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
+
+// data
 const state = reactive({
   error: null,
   isLoading: false,
   isError: false,
   isSuccess: false,
 });
+
+const id = this.$route.params.id;
 
 const handleError = (error) => {
   state.error = error ? error : null;

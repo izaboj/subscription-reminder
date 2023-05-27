@@ -71,7 +71,6 @@ export const useSubscriptionsStore = defineStore("subscriptions", {
       }
     },
     async deleteSubscription(id) {
-      console.log("ID", id);
       const authStore = useAuthStore();
       const userId = authStore.userId;
       const tokenId = authStore.userToken;

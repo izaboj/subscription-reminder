@@ -13,7 +13,7 @@
     }}</base-dialog>
 
     <base-card>
-      <form class="pa-5 ma-5" @submit.prevent="submitForm">
+      <form class="ma-5" @submit.prevent="submitForm">
         <v-text-field
           class="mb-3"
           v-model.trim="state.form.email"

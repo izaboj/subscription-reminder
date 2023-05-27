@@ -11,8 +11,9 @@
     <v-expansion-panel-title class="d-flex">
       <v-row no-gutters class="d-flex justify-space-between">
         <v-col
-          class="text-primary font-weight-medium d-flex align-center justify-start"
+          class="text-font-weight-medium d-flex align-center justify-start"
         >
+          <v-icon :icon="iconName" class="mr-2"></v-icon>
           {{ item.name }}
         </v-col>
         <v-col class="text-body-2 d-flex align-center justify-end">
@@ -37,10 +38,12 @@
         <v-col class="font-weight-medium"> More Info </v-col>
         <v-col class="text-body-2">
           <!-- {{ item.link }} -->
-          <a href="www.google.pl">google.pl</a>
+          <a :href="item.link">{{ item.link }}</a>
         </v-col>
       </v-row>
-      <v-btn color="secondary">Edit</v-btn>
+      <RouterLink :to="`/subscriptions/edit/${item.id}`">
+        <v-btn color="secondary">Edit</v-btn>
+      </RouterLink>
       <v-btn class="ml-12" text @click="state.dialog = !state.dialog"
         >delete</v-btn
       >
@@ -48,7 +51,7 @@
   </v-expansion-panel>
 </template>
 <script setup>
-import { reactive } from "vue";
+import { reactive, computed } from "vue";
 import { useSubscriptionsStore } from "@/stores/subscriptions";
 
 // emit
@@ -68,6 +71,10 @@ const subStore = useSubscriptionsStore();
 //state
 const state = reactive({
   dialog: false,
+});
+
+const iconName = computed(() => {
+  return "mdi-" + props.item.name.toLowerCase();
 });
 
 const deleteItem = async (id) => {

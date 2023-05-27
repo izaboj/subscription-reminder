@@ -14,19 +14,20 @@ const router = createRouter({
       component: SubscriptionList,
     },
     {
-      path: "/subscriptions/:id",
+      path: "/subscriptions/edit/:id",
       name: "subscriptionDetails",
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () =>
-        import("../views/subscriptions/ViewSubscriptionDetails.vue"),
+        import("../views/subscriptions/ViewEditSubscription.vue"),
     },
-    {
-      path: "/add",
-      name: "addSubscription",
-      component: () => import("../views/subscriptions/ViewAddSubscription.vue"),
-    },
+    // {
+    //   path: "/subscriptions/add",
+    //   name: "addSubscription",
+    //   component: () =>
+    //     import("../views/subscriptions/ViewEditSubscription.vue"),
+    // },
     {
       path: "/auth",
       name: "authentication",

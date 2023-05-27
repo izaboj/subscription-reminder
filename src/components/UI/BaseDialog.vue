@@ -1,13 +1,13 @@
 <template>
   <v-dialog v-model="dialog" width="400" min-height="100" persistent>
-    <v-card>
+    <v-card class="pt-3">
       <v-card-title class="text-h5">
         {{ title }}
       </v-card-title>
       <v-card-text>
         <slot></slot>
       </v-card-text>
-      <v-card-actions v-if="isActionDialog">
+      <v-card-actions v-if="isActionDialog" class="">
         <v-btn color="primary" @click="$emit('confirm')">yes</v-btn>
         <v-btn color="secondary" @click="$emit('close')">no</v-btn>
       </v-card-actions>

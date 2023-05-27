@@ -66,11 +66,11 @@ const listItems = [
     link: "/subscriptions",
     title: "List of subscriptions",
   },
-  {
-    icon: "mdi-plus",
-    link: "/add",
-    title: "Add subscription",
-  },
+  // {
+  //   icon: "mdi-plus",
+  //   link: "/subscriptions/add",
+  //   title: "Add subscription",
+  // },
   {
     icon: "mdi-information-outline",
     link: "/about",

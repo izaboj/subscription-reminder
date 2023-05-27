@@ -1,6 +1,7 @@
 <template>
-  <form class="pa-5 ma-5" @submit.prevent="submitForm">
+  <form @submit.prevent="submitForm">
     <v-select
+      class="mb-3"
       v-model="state.form.name"
       :items="state.availableSubscriptions"
       item-value="text"
@@ -18,7 +19,6 @@
             </v-row>
           </v-list-item-title>
           <template v-slot:prepend>
-            {{ item.raw.icon }}
             <v-icon :icon="item.raw.icon"></v-icon>
           </template>
         </v-list-item>
@@ -43,6 +43,7 @@
       @blur="v$.dueTo.$touch"
     ></v-text-field>
     <v-switch
+      class="mb-3"
       v-model="state.form.reminder"
       hide-details
       true-value="yes"
@@ -54,23 +55,39 @@
         :disabled="!state.isValidated"
         :loading="state.isLoading"
         type="submit"
-        class="me-4"
+        class="mr-4"
+        color="primary"
       >
-        add</v-btn
+        {{ buttonName }}</v-btn
       >
-      <v-btn variant="text" @click="cancelAction"> cancel </v-btn>
+      <v-btn variant="text" color="secondary" @click="cancelAction">
+        cancel
+      </v-btn>
     </div>
   </form>
 </template>
 <script setup>
-import { reactive } from "vue";
+import { reactive, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useSubscriptionsStore } from "@/stores/subscriptions";
 import { useVuelidate } from "@vuelidate/core";
 import { required, minLength } from "@vuelidate/validators";
 
-const emit = defineEmits(["error", "success"]);
+//props + emit
+const emit = defineEmits(["error", "success", "close"]);
+const props = defineProps([
+  {
+    type: String,
+    required: true,
+  },
+  { id: String, required: false },
+]);
 
+const buttonName = computed(() => {
+  return props.type === "edit" ? "update" : "add";
+});
+
+//data
 const state = reactive({
   form: {
     name: null,
@@ -92,7 +109,6 @@ const state = reactive({
 // validation
 const rules = {
   name: { required },
-  // selected: { required },
   price: { required },
   dueTo: { required, minLength: minLength(10) },
   reminder: { required },
@@ -102,12 +118,22 @@ const v$ = useVuelidate(rules, state.form);
 const router = useRouter();
 const store = useSubscriptionsStore();
 
-const submitForm = async () => {
-  state.isLoading = true;
-  state.isValidated = await v$.value.$validate();
-  if (!state.isValidated) {
+const getSubscriptionDataToEdit = () => {
+  if (!props.id) {
     return;
   } else {
+    const filtered = store.subscriptions.filter((item) => item.id === props.id);
+    console.log(filtered);
+  }
+};
+
+const submitForm = async () => {
+  state.isValidated = await v$.value.$validate();
+  if (!state.isValidated) {
+    state.isValidated = true;
+    return;
+  } else {
+    state.isLoading = true;
     const item = { ...state.form };
     try {
       await store.addSubscription(item);
@@ -117,8 +143,11 @@ const submitForm = async () => {
     }
   }
   state.isLoading = false;
+  state.isValidated = true;
 };
 const cancelAction = () => {
   router.replace("/subscriptions");
+  emit("close");
 };
+getSubscriptionDataToEdit();
 </script>

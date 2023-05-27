@@ -2,7 +2,10 @@
   <base-dialog v-model="hasError" title="Error" @close="handleError">{{
     error
   }}</base-dialog>
-  <add-new-subscription-dialog v-model="dialog"></add-new-subscription-dialog>
+  <add-new-subscription-dialog
+    v-model="dialog"
+    @error="handleError"
+  ></add-new-subscription-dialog>
   <base-sheet justify="start">
     <h2 class="text-h5 mb-4">
       <v-icon color="primary" icon="mdi-youtube-subscription"></v-icon>
@@ -20,7 +23,7 @@
         class="ml-4"
         prepend-icon="mdi-plus"
         color="primary"
-        @click="activeDialog"
+        @click="dialog = true"
         >add new</v-btn
       >
     </div>
@@ -78,10 +81,7 @@ const loadItems = async () => {
   }
   isLoading.value = false;
 };
-const activeDialog = () => {
-  console.log("active dialog");
-  dialog.value = true;
-};
+
 const handleError = (e) => {
   error.value = e ? e : null;
   hasError.value = e ? true : false;
