@@ -1,6 +1,5 @@
 import { defineStore } from "pinia";
 import { useAuthStore } from "@/stores/auth";
-import { toRaw } from "vue";
 
 export const useSubscriptionsStore = defineStore("subscriptions", {
   state: () => ({

@@ -1,4 +1,10 @@
 import { defineStore } from "pinia";
+import { auth } from "@/js/firebase";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
@@ -18,78 +24,32 @@ export const useAuthStore = defineStore("auth", {
     async signup(payload) {
       await this.auth(payload.email, payload.password, "signup");
     },
-    logout() {
-      (this.userId = null), (this.userName = null), (this.userToken = null);
-      localStorage.removeItem("token");
-      localStorage.removeItem("userId");
-      localStorage.removeItem("expirationDate");
-    },
     async auth(email, password, mode) {
-      let endpoint = "";
+      let userCredential = {};
       if (mode === "login") {
-        endpoint =
-          "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyALuqYLRMz10nv1mpbEwjg6NQowPBbMiBQ";
-      } else {
-        endpoint =
-          "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyALuqYLRMz10nv1mpbEwjg6NQowPBbMiBQ";
-      }
-      const response = await fetch(endpoint, {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-          returnSecureToken: true,
-        }),
-      });
-      const jsonData = await response.json();
-
-      console.log("jsonData", jsonData);
-
-      if (!response.ok) {
-        throw new Error(
-          jsonData.error.message || "sth went worong during login request"
+        userCredential = await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
         );
-      }
-
-      // to local storage
-      // 3600s -> ms
-      // const expiresIn = +jsonData.expiresIn * 1000;
-      // 24h -> ms
-      const expiresIn = 24 * 3600 * 1000;
-      const expirationDate = new Date().getTime() + expiresIn;
-
-      localStorage.setItem("token", jsonData.idToken);
-      localStorage.setItem("userId", jsonData.localId);
-      localStorage.setItem("expirationDate", expirationDate);
-
-      // set userId and
-      (this.userId = jsonData.localId),
-        (this.userName = jsonData.email),
-        (this.userToken = jsonData.idToken);
-    },
-    tryLogin() {
-      console.log("tryLogin ...");
-      const token = localStorage.getItem("token");
-      const userId = localStorage.getItem("userId");
-      const expirationDate = localStorage.getItem("expirationDate");
-
-      const expiresIn = +expirationDate - new Date().getTime();
-      console.log("expiresIn", expiresIn);
-      if (expiresIn < 0) {
-        return;
-      }
-
-      if (token && userId) {
-        (this.userId = userId),
-          (this.userName = "TryLoginName"),
-          (this.userToken = token);
+        // Signed in
+        console.log("user logged in");
       } else {
-        return;
+        userCredential = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+        console.log("user created");
       }
+      const user = userCredential.user;
+      this.userId = user.uid;
+      this.userName = user.email;
+      this.userToken = user.accessToken;
+    },
+    async logout() {
+      await signOut(auth);
+      console.log("logged out");
     },
   },
 });

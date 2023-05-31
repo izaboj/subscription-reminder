@@ -122,6 +122,7 @@ async function submitForm() {
     } catch (e) {
       state.isError = true;
       state.error = e.message || "An error occurred while login";
+      router.replace("/auth");
     }
     state.isLoading = false;
   }

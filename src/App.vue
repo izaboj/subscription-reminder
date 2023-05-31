@@ -87,7 +87,6 @@ const setButtonCaptions = computed(() => {
   return authStore.isLoggedIn ? "Logout" : "Login";
 });
 
-authStore.tryLogin();
 console.log("im created APP vue");
 
 const clickAction = () => {
