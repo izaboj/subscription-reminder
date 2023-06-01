@@ -75,13 +75,13 @@ import { required, minLength } from "@vuelidate/validators";
 
 //props + emit
 const emit = defineEmits(["error", "success", "close"]);
-const props = defineProps([
-  {
+const props = defineProps({
+  type: {
     type: String,
     required: true,
   },
-  { id: String, required: false },
-]);
+  id: { type: String, required: false },
+});
 
 const buttonName = computed(() => {
   return props.type === "edit" ? "update" : "add";

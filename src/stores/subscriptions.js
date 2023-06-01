@@ -93,4 +93,8 @@ export const useSubscriptionsStore = defineStore("subscriptions", {
       }
     },
   },
+  // mounted() {
+  //   console.log("Pinia mounted subscrip ");
+  //   getSubscriptions;
+  // },
 });
