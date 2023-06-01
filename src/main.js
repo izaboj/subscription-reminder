@@ -1,4 +1,4 @@
-import { createApp } from "vue";
+import { createApp, markRaw } from "vue";
 import { createPinia } from "pinia";
 
 import App from "./App.vue";
@@ -9,8 +9,13 @@ import BaseDialog from "./components/UI/BaseDialog.vue";
 import BaseSheet from "./components/UI/BaseSheet.vue";
 
 const app = createApp(App);
+const pinia = createPinia();
 
-app.use(createPinia());
+pinia.use(({ store }) => {
+  store.router = markRaw(router);
+});
+
+app.use(pinia);
 app.use(router);
 app.use(vuetify);
 app.component("base-dialog", BaseDialog);

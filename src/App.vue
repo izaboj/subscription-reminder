@@ -53,12 +53,15 @@
   </v-app>
 </template>
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 
+// store  + router
 const authStore = useAuthStore();
 const router = useRouter();
+
+// data + computed
 const drawer = ref(null);
 const listItems = [
   {
@@ -87,12 +90,15 @@ const setButtonCaptions = computed(() => {
   return authStore.isLoggedIn ? "Logout" : "Login";
 });
 
-console.log("im created APP vue");
-
+// methods
 const clickAction = () => {
   if (authStore.isLoggedIn) {
     authStore.logout();
   }
-  router.replace("/auth");
 };
+
+// hooks
+onMounted(() => {
+  authStore.init();
+});
 </script>

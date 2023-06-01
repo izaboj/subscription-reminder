@@ -4,6 +4,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  onAuthStateChanged,
 } from "firebase/auth";
 
 export const useAuthStore = defineStore("auth", {
@@ -18,38 +19,37 @@ export const useAuthStore = defineStore("auth", {
     },
   },
   actions: {
+    init() {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          // console.log("user logged in Watcher", user);
+          this.setUser(user);
+          localStorage.setItem("user", JSON.stringify(user.uid));
+          this.router.push("/");
+        } else {
+          // console.log("user logged out Watcher", user);
+          this.setUser(user);
+          this.router.replace("/auth");
+        }
+      });
+    },
+    setUser(user) {
+      this.userId = user?.uid || null;
+      this.userName = user?.email || null;
+      this.userToken = user?.accessToken || null;
+    },
     async login(payload) {
-      await this.auth(payload.email, payload.password, "login");
+      await signInWithEmailAndPassword(auth, payload.email, payload.password);
     },
     async signup(payload) {
-      await this.auth(payload.email, payload.password, "signup");
-    },
-    async auth(email, password, mode) {
-      let userCredential = {};
-      if (mode === "login") {
-        userCredential = await signInWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
-        // Signed in
-        console.log("user logged in");
-      } else {
-        userCredential = await createUserWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
-        console.log("user created");
-      }
-      const user = userCredential.user;
-      this.userId = user.uid;
-      this.userName = user.email;
-      this.userToken = user.accessToken;
+      await createUserWithEmailAndPassword(
+        auth,
+        payload.email,
+        payload.password
+      );
     },
     async logout() {
       await signOut(auth);
-      console.log("logged out");
     },
   },
 });

@@ -53,7 +53,7 @@
   </v-card>
 </template>
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useSubscriptionsStore } from "@/stores/subscriptions";
 import SubscriptionItem from "@/components/subscriptions/SubscriptionItem.vue";
 import AddNewSubscriptionDialog from "@/components/subscriptions/AddNewSubscriptionDialog.vue";
@@ -71,6 +71,7 @@ const hasSubscriptions = computed(() => {
   return subStore.hasSubscriptions;
 });
 
+// methods
 const loadItems = async () => {
   isLoading.value = true;
   try {
@@ -86,5 +87,9 @@ const handleError = (e) => {
   error.value = e ? e : null;
   hasError.value = e ? true : false;
 };
-loadItems();
+
+// hooks
+onMounted(() => {
+  loadItems();
+});
 </script>

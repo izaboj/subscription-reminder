@@ -118,7 +118,6 @@ async function submitForm() {
       } else {
         await store.signup(payload, "signup");
       }
-      router.replace("/subscriptions");
     } catch (e) {
       state.isError = true;
       state.error = e.message || "An error occurred while login";
