@@ -22,13 +22,10 @@ export const useAuthStore = defineStore("auth", {
     init() {
       onAuthStateChanged(auth, (user) => {
         if (user) {
-          // console.log("user logged in Watcher", user);
           this.setUser(user);
-          localStorage.setItem("user", JSON.stringify(user.uid));
-          localStorage.setItem("token", JSON.stringify(user.accessToken));
+          this.saveToWindowLocalStorage(user);
           this.router.push("/");
         } else {
-          // console.log("user logged out Watcher", user);
           this.setUser(user);
           this.router.replace("/auth");
         }
@@ -38,6 +35,10 @@ export const useAuthStore = defineStore("auth", {
       this.userId = user?.uid || null;
       this.userName = user?.email || null;
       this.userToken = user?.accessToken || null;
+    },
+    saveToWindowLocalStorage(user) {
+      localStorage.setItem("user", JSON.stringify(user.uid));
+      localStorage.setItem("token", JSON.stringify(user.accessToken));
     },
     async login(payload) {
       await signInWithEmailAndPassword(auth, payload.email, payload.password);
