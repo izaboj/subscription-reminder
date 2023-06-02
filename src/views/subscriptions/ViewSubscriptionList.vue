@@ -77,7 +77,7 @@ const loadItems = async () => {
   try {
     await subStore.getSubscriptions();
   } catch (e) {
-    error.value = e.message || "error during loadingItems";
+    error.value = e.message || "error during getting data";
     hasError.value = true;
   }
   isLoading.value = false;

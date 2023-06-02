@@ -25,6 +25,7 @@ export const useAuthStore = defineStore("auth", {
           // console.log("user logged in Watcher", user);
           this.setUser(user);
           localStorage.setItem("user", JSON.stringify(user.uid));
+          localStorage.setItem("token", JSON.stringify(user.accessToken));
           this.router.push("/");
         } else {
           // console.log("user logged out Watcher", user);

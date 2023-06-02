@@ -6,7 +6,7 @@ export const useSubscriptionsStore = defineStore("subscriptions", {
     lastFetch: null,
     subscriptions: [],
     firebaseEndpoint:
-      "https://subscription-reminder-5d2a3-default-rtdb.firebaseio.com/",
+      "https://subscription-reminder-5d2a3-default-rtdb.firebaseio.com",
   }),
   getters: {
     hasSubscriptions(state) {
@@ -16,8 +16,10 @@ export const useSubscriptionsStore = defineStore("subscriptions", {
   actions: {
     async getSubscriptions() {
       const authStore = useAuthStore();
-      const userId = authStore.userId;
-      const tokenId = authStore.userToken;
+      const userId =
+        JSON.parse(localStorage.getItem("user")) || authStore.userId;
+      const tokenId =
+        JSON.parse(localStorage.getItem("token")) || authStore.userToken;
       const url =
         this.firebaseEndpoint + `/subscriptions/${userId}.json?auth=` + tokenId;
 
@@ -93,8 +95,4 @@ export const useSubscriptionsStore = defineStore("subscriptions", {
       }
     },
   },
-  // mounted() {
-  //   console.log("Pinia mounted subscrip ");
-  //   getSubscriptions;
-  // },
 });

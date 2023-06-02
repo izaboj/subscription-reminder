@@ -33,6 +33,7 @@ const state = reactive({
 
 const id = this.$route.params.id;
 
+//methods
 const handleError = (error) => {
   state.error = error ? error : null;
   state.isError = error ? true : false;
