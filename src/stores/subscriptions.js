@@ -1,12 +1,12 @@
 import { defineStore } from "pinia";
 import { useAuthStore } from "@/stores/auth";
+import { db } from "@/js/firebase";
+import { collection, getDocs } from "firebase/firestore";
 
 export const useSubscriptionsStore = defineStore("subscriptions", {
   state: () => ({
     lastFetch: null,
     subscriptions: [],
-    firebaseEndpoint:
-      "https://subscription-reminder-5d2a3-default-rtdb.firebaseio.com",
   }),
   getters: {
     hasSubscriptions(state) {
@@ -20,30 +20,27 @@ export const useSubscriptionsStore = defineStore("subscriptions", {
         JSON.parse(localStorage.getItem("user")) || authStore.userId;
       const tokenId =
         JSON.parse(localStorage.getItem("token")) || authStore.userToken;
-      const url =
-        this.firebaseEndpoint + `/subscriptions/${userId}.json?auth=` + tokenId;
-
-      const response = await fetch(url, {
-        method: "GET",
-      });
-
-      const responseData = await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          responseData.message ||
-            "sth went wrong during getting list of subscription"
+      try {
+        const querySnapshot = await getDocs(
+          collection(db, "users", userId, "subscriptions")
         );
-      } else {
-        const mappedData = [];
-        for (const key in responseData) {
-          const item = {
-            id: key,
-            ...responseData[key],
-          };
-          mappedData.push(item);
+        if (querySnapshot) {
+          let subscriptionsList = [];
+          querySnapshot.forEach((doc) => {
+            subscriptionsList.push({
+              id: doc.id,
+              name: doc.data().name,
+              price: doc.data().price,
+              link: doc.data().link,
+              reminder: doc.data().reminder,
+            });
+          });
+          this.subscriptions = subscriptionsList;
+        } else {
+          console.log("error, query empty", firebase.firestore.FirestoreError);
         }
-        this.subscriptions = mappedData;
+      } catch (e) {
+        throw new Error(e);
       }
     },
     async addSubscription(data) {

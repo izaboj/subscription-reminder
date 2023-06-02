@@ -37,7 +37,6 @@
       <v-row no-gutters class="d-flex flex-column align-start mb-4">
         <v-col class="font-weight-medium"> More Info </v-col>
         <v-col class="text-body-2">
-          <!-- {{ item.link }} -->
           <a :href="item.link">{{ item.link }}</a>
         </v-col>
       </v-row>
