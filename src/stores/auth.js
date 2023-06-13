@@ -27,6 +27,7 @@ export const useAuthStore = defineStore("auth", {
           this.router.push("/");
         } else {
           this.setUser(user);
+          this.removeFromWindowLocalStorage();
           this.router.replace("/auth");
         }
       });
@@ -39,6 +40,10 @@ export const useAuthStore = defineStore("auth", {
     saveToWindowLocalStorage(user) {
       localStorage.setItem("user", JSON.stringify(user.uid));
       localStorage.setItem("token", JSON.stringify(user.accessToken));
+    },
+    removeFromWindowLocalStorage() {
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
     },
     async login(payload) {
       await signInWithEmailAndPassword(auth, payload.email, payload.password);
