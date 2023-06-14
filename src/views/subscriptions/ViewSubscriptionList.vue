@@ -27,22 +27,21 @@
         >add new</v-btn
       >
     </div>
-    <v-expansion-panels>
-      <v-progress-linear
-        v-if="subStore.isLoading"
-        indeterminate
-        color="primary"
-        class="mb-0"
-      ></v-progress-linear>
+    <v-progress-linear
+      v-if="subStore.isLoading"
+      indeterminate
+      color="primary"
+      class="mb-0"
+    ></v-progress-linear>
+    <v-expansion-panels v-else-if="hasSubscriptions">
       <subscription-item
-        v-else
         v-for="i in subStore.subscriptions"
         :item="i"
         :key="i.id"
         @error="handleError"
       ></subscription-item>
     </v-expansion-panels>
-    <div v-if="!subStore.isLoading && !hasSubscriptions">
+    <div v-else-if="!hasSubscriptions && !subStore.isLoading">
       No subscription found
     </div>
   </base-sheet>
@@ -73,32 +72,14 @@ const subStore = useSubscriptionsStore();
 // data
 const error = ref(null);
 const hasError = ref(false);
-const isLoading = ref(false);
 const dialog = ref(false);
 
 const hasSubscriptions = computed(() => {
   return subStore.hasSubscriptions;
 });
 
-// methods
-const loadItems = async () => {
-  isLoading.value = true;
-  try {
-    await subStore.getSubscriptions();
-  } catch (e) {
-    error.value = e.message || "error during getting data";
-    hasError.value = true;
-  }
-  isLoading.value = false;
-};
-
 const handleError = (e) => {
   error.value = e ? e : null;
   hasError.value = e ? true : false;
 };
-
-// hooks;
-// onMounted(() => {
-//   loadItems();
-// });
 </script>

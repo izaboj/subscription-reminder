@@ -1,7 +1,10 @@
 import { defineStore } from "pinia";
 import { useAuthStore } from "@/stores/auth";
 import { db } from "@/js/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
+
+let unsubscribe = null;
+let collectionRef;
 
 export const useSubscriptionsStore = defineStore("subscriptions", {
   state: () => ({
@@ -15,6 +18,10 @@ export const useSubscriptionsStore = defineStore("subscriptions", {
   },
   actions: {
     init() {
+      const authStore = useAuthStore();
+      const userId =
+        JSON.parse(localStorage.getItem("user")) || authStore.userId;
+      collectionRef = collection(db, "users", userId, "subscriptions");
       this.getSubscriptions();
     },
     clearSubscriptions() {
@@ -22,16 +29,12 @@ export const useSubscriptionsStore = defineStore("subscriptions", {
     },
     async getSubscriptions() {
       this.isLoading = true;
-      const authStore = useAuthStore();
-      const userId =
-        JSON.parse(localStorage.getItem("user")) || authStore.userId;
-      const tokenId =
-        JSON.parse(localStorage.getItem("token")) || authStore.userToken;
-      try {
-        const querySnapshot = await getDocs(
-          collection(db, "users", userId, "subscriptions")
-        );
-        if (querySnapshot) {
+
+      if (unsubscribe) unsubscribe(); //unsubscribe from any active listener
+
+      unsubscribe = onSnapshot(
+        collectionRef,
+        (querySnapshot) => {
           let subscriptionsList = [];
           querySnapshot.forEach((doc) => {
             subscriptionsList.push({
@@ -43,13 +46,12 @@ export const useSubscriptionsStore = defineStore("subscriptions", {
             });
           });
           this.subscriptions = subscriptionsList;
-        } else {
-          console.log("error, query empty", firebase.firestore.FirestoreError);
+          this.isLoading = false;
+        },
+        (error) => {
+          throw new Error(error);
         }
-        this.isLoading = false;
-      } catch (e) {
-        throw new Error(e);
-      }
+      );
     },
     async addSubscription(data) {
       const authStore = useAuthStore();
