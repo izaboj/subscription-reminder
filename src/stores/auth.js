@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { auth } from "@/js/firebase";
+import { useSubscriptionsStore } from "./subscriptions.js";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -9,8 +10,8 @@ import {
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
-    userName: null,
     userId: null,
+    userName: null,
     userToken: null,
   }),
   getters: {
@@ -20,13 +21,18 @@ export const useAuthStore = defineStore("auth", {
   },
   actions: {
     init() {
+      const subStore = useSubscriptionsStore();
       onAuthStateChanged(auth, (user) => {
+        //login
         if (user) {
           this.setUser(user);
+          subStore.init();
           this.saveToWindowLocalStorage(user);
           this.router.push("/");
+          //logout
         } else {
-          this.setUser(user);
+          this.setUser();
+          subStore.clearSubscriptions();
           this.removeFromWindowLocalStorage();
           this.router.replace("/auth");
         }

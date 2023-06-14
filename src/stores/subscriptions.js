@@ -5,7 +5,7 @@ import { collection, getDocs } from "firebase/firestore";
 
 export const useSubscriptionsStore = defineStore("subscriptions", {
   state: () => ({
-    lastFetch: null,
+    isLoading: false,
     subscriptions: [],
   }),
   getters: {
@@ -14,7 +14,14 @@ export const useSubscriptionsStore = defineStore("subscriptions", {
     },
   },
   actions: {
+    init() {
+      this.getSubscriptions();
+    },
+    clearSubscriptions() {
+      this.subscriptions = [];
+    },
     async getSubscriptions() {
+      this.isLoading = true;
       const authStore = useAuthStore();
       const userId =
         JSON.parse(localStorage.getItem("user")) || authStore.userId;
@@ -39,6 +46,7 @@ export const useSubscriptionsStore = defineStore("subscriptions", {
         } else {
           console.log("error, query empty", firebase.firestore.FirestoreError);
         }
+        this.isLoading = false;
       } catch (e) {
         throw new Error(e);
       }

@@ -27,15 +27,24 @@
         >add new</v-btn
       >
     </div>
-    <v-expansion-panels v-if="hasSubscriptions">
+    <v-expansion-panels>
+      <v-progress-linear
+        v-if="subStore.isLoading"
+        indeterminate
+        color="primary"
+        class="mb-0"
+      ></v-progress-linear>
       <subscription-item
+        v-else
         v-for="i in subStore.subscriptions"
         :item="i"
         :key="i.id"
         @error="handleError"
       ></subscription-item>
     </v-expansion-panels>
-    <div v-else>No subscription found</div>
+    <div v-if="!subStore.isLoading && !hasSubscriptions">
+      No subscription found
+    </div>
   </base-sheet>
   <v-card
     color="background"
@@ -88,8 +97,8 @@ const handleError = (e) => {
   hasError.value = e ? true : false;
 };
 
-// hooks
-onMounted(() => {
-  loadItems();
-});
+// hooks;
+// onMounted(() => {
+//   loadItems();
+// });
 </script>
