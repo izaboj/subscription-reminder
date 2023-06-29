@@ -11,16 +11,4 @@
     </v-sheet>
   </v-container>
 </template>
-<script setup>
-const props = defineProps({
-  title: {
-    type: String,
-    default: "",
-    required: false,
-  },
-  color: {
-    type: String,
-    required: false,
-  },
-});
-</script>
+<script setup lang="ts"></script>

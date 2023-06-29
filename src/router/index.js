@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
 import SubscriptionList from "../views/subscriptions/ViewSubscriptionList.vue";
-import { useAuthStore } from "@/stores/auth.js";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -40,14 +39,5 @@ const router = createRouter({
     },
   ],
 });
-
-// router.beforeEach(async (to, from) => {
-//   // store
-//   const authStore = useAuthStore();
-//   console.log("authStore", authStore.isLoggedIn);
-//   if (!authStore.isLoggedIn && to.name !== "auth") {
-//     return { name: "auth" };
-//   }
-// });
 
 export default router;
