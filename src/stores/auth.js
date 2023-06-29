@@ -1,6 +1,9 @@
 import { defineStore } from "pinia";
 import { auth } from "@/js/firebase";
-import { useSubscriptionsStore } from "./subscriptions.js";
+import {
+  useSubscriptionsStore,
+  unsubscribeFromSnapshot,
+} from "./subscriptions.js";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -63,6 +66,7 @@ export const useAuthStore = defineStore("auth", {
     },
     async logout() {
       await signOut(auth);
+      unsubscribeFromSnapshot(); // Unsubscribe when the user logs out
     },
   },
 });

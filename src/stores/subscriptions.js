@@ -103,3 +103,9 @@ export const useSubscriptionsStore = defineStore("subscriptions", {
     },
   },
 });
+export function unsubscribeFromSnapshot() {
+  if (unsubscribe) {
+    unsubscribe();
+    unsubscribe = null;
+  }
+}
