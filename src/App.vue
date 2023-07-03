@@ -55,13 +55,15 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import { useAuthStore } from "@/stores/auth";
+import { ListItems } from "@/types";
 
 // store  + router
 const authStore = useAuthStore();
 
 // data + computed
-const drawer = ref(false);
-const listItems = [
+const drawer = ref<boolean>(false);
+
+const listItems: ListItems[] = [
   {
     icon: "mdi-youtube-subscription",
     link: "/subscriptions",
@@ -78,18 +80,18 @@ const listItems = [
     title: "About",
   },
 ];
-const setDrawerSubtitle = computed(() => {
+const setDrawerSubtitle = computed<string>(() => {
   return authStore.isLoggedIn ? "Logged in" : "Logged out";
 });
-const setDrawerTitle = computed(() => {
+const setDrawerTitle = computed<string>(() => {
   return authStore.isLoggedIn ? authStore.userName : "";
 });
-const setButtonCaptions = computed(() => {
+const setButtonCaptions = computed<string>(() => {
   return authStore.isLoggedIn ? "Logout" : "Login";
 });
 
 // methods
-const clickAction = () => {
+const clickAction = (): void => {
   if (authStore.isLoggedIn) {
     authStore.logout();
   }
